@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Aroma Atlas — Brasil</title>
+
+  <!-- FONTES -->
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400&family=Inter:wght@300;400&display=swap" rel="stylesheet">
+
+  <!-- CSS -->
+  <link rel="stylesheet" href="styles/style.css">
+</head>
+
+<body>
+
+  <!-- LUZ CINEMATOGRÁFICA -->
+  <div class="light-overlay"></div>
+
+  <!-- ÁUDIO -->
+  <audio id="ambientSound" loop>
+    <source src="assets/audio/floresta.mp3" type="audio/mpeg">
+  </audio>
+
+  <main>
+
+    <!-- HERO -->
+    <section class="section hero intro">
+      <img src="assets/images/brasil-perfume.png" class="bottle" alt="Perfume Brasil">
+      <h1>Brasil</h1>
+      <p>Um território que respira vida, memória e essência.</p>
+      <span class="hint">toque para iniciar</span>
+    </section>
+
+    <!-- LIMIAR -->
+    <section class="section limiar">
+      <div>
+        <h2>O Portal</h2>
+        <p>Uma transição entre o mundo físico e o sensorial.</p>
+      </div>
+    </section>
+
+    <!-- FLORESTA -->
+    <section class="section floresta">
+      <div>
+        <h2>A Floresta</h2>
+        <p>O ar é denso, úmido, vivo. A natureza pulsa ao seu redor.</p>
+      </div>
+    </section>
+
+    <!-- SABERES -->
+    <section class="section saberes">
+      <div>
+        <h2>Saberes Ancestrais</h2>
+        <p>Histórias, rituais e conexões profundas com a terra.</p>
+      </div>
+    </section>
+
+    <!-- FRAGRÂNCIA -->
+    <section class="section fragrancia">
+      <div class="nota topo">
+        <p>Notas de topo: frescor verde, folhas e umidade.</p>
+      </div>
+      <div class="nota coracao">
+        <p>Notas de coração: flores e resinas da floresta.</p>
+      </div>
+      <div class="nota fundo">
+        <p>Notas de fundo: madeira, terra e profundidade.</p>
+      </div>
+    </section>
+
+    <!-- FINAL -->
+    <section class="section final">
+      <div>
+        <h2>Sinta o território</h2>
+        <p>Uma fragrância que não se usa. Se vive.</p>
+        <button id="restart">Reiniciar experiência</button>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- JS -->
+  <script src="scripts/main.js"></script>
+
+</body>
+</html>
