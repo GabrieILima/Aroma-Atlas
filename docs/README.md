@@ -66,14 +66,15 @@ O usuário percorre uma jornada dividida em etapas:
 
 ```
 Aroma Atlas/
-├── main/
+├── docs/
 │   ├── index.html
-│   ├── style.css
-│   ├── script.js
+│   ├── styles/
+|      ├── style.css
+│   ├── scripts/
+│      ├── script.js
 │   └── assets/
 │       ├── images/
 │       └── audio/
-├── docs/
 └── README.md
 ```
 
@@ -143,7 +144,7 @@ Este projeto está sob a licença MIT.
 
 Projeto desenvolvido para o **L’Oréal Brandstorm 2026** por:
 
-Gabriel Henrique de Lima Oliveira
+Gabriel Henrique de Lima Oliveira /
 Helen Cristina Honorato Marcelino
 
 ---
