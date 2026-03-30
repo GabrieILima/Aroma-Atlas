@@ -1,4 +1,41 @@
 // =========================
+// Sempre voltar para a intro ao recarregar
+window.addEventListener('beforeunload', () => {
+  window.scrollTo(0, 0);
+});
+
+window.addEventListener('load', () => {
+  setTimeout(() => {
+    window.scrollTo(0, 0);
+  }, 10);
+});
+// NAVEGAÇÃO ENTRE SEÇÕES COM TÚNEL DO TEMPO
+const tunnel = document.getElementById('tunnelTransition');
+let tunnelTimeout = null;
+
+document.querySelectorAll('.nav-hint').forEach(hint => {
+  hint.addEventListener('click', function(e) {
+    const targetSelector = this.getAttribute('data-target');
+    const targetSection = document.querySelector(targetSelector);
+    if (targetSection) {
+      // Ativa efeito túnel
+      tunnel.classList.add('active');
+      clearTimeout(tunnelTimeout);
+      tunnelTimeout = setTimeout(() => {
+        tunnel.classList.remove('active');
+        window.scrollTo({
+          top: targetSection.offsetTop,
+          behavior: 'smooth'
+        });
+      }, 600);
+    }
+    // Inicia música só a partir da floresta
+    if (targetSelector === '.floresta' && !audioStarted) {
+      startExperience();
+    }
+    e.stopPropagation();
+  });
+});
 // ELEMENTOS
 // =========================
 const audio = document.getElementById("ambientSound");
@@ -34,13 +71,19 @@ function startExperience() {
 // =========================
 // ENTRADA
 // =========================
+// ENTRADA COM TÚNEL DO TEMPO
 introSection.addEventListener("click", () => {
-  startExperience();
-
-  window.scrollTo({
-    top: window.innerHeight,
-    behavior: "smooth"
-  });
+  tunnel.classList.add('active');
+  clearTimeout(tunnelTimeout);
+  setTimeout(() => {
+    window.scrollTo({
+      top: window.innerHeight,
+      behavior: 'smooth'
+    });
+    setTimeout(() => {
+      tunnel.classList.remove('active');
+    }, 600);
+  }, 600);
 });
 
 // =========================
@@ -52,9 +95,14 @@ restartBtn.addEventListener("click", () => {
     behavior: "smooth"
   });
 
+  audio.pause();
   audio.currentTime = 0;
-  audio.play();
+  audioStarted = false;
 });
+
+// =========================
+// NAVEGAÇÃO ENTRE SEÇÕES
+// =========================
 
 // =========================
 // INTERSECTION OBSERVER (SUAVIDADE PRO)
