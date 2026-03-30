@@ -1,4 +1,4 @@
-# 🌿 Aroma Atlas — Brasil Sensorial
+# 🌿 Aroma Atlas — Passaport Sensorial
 
 ## 🧠 Conceito
 
