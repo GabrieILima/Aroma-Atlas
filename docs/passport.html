@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta
+    name="description"
+    content="Passaporte sensorial do Aroma Atlas com fragrâncias descobertas e territórios olfativos ainda por revelar."
+  >
+  <title>Aroma Atlas | Passaporte Sensorial</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600&family=Manrope:wght@300;400;500;600;700&display=swap"
+    rel="stylesheet"
+  >
+  <link rel="stylesheet" href="styles/passport.css">
+</head>
+<body>
+  <div class="page-glow"></div>
+  <div class="page-grain"></div>
+
+  <header class="topbar">
+    <a class="topbar-link" href="index.html">voltar para a jornada</a>
+    <button id="resetPassport" class="ghost-button" type="button">limpar registros</button>
+  </header>
+
+  <main class="passport-shell">
+    <section class="passport-hero">
+      <div class="hero-copy">
+        <span class="eyebrow">Passaporte sensorial</span>
+        <h1>Seu mapa de descobertas</h1>
+        <p class="lede">
+          Cada toque NFC no frasco revela um território olfativo. Aqui ficam registrados os aromas
+          já encontrados e os caminhos que ainda aguardam descoberta.
+        </p>
+      </div>
+
+      <div class="passport-panel">
+        <div class="stat-card">
+          <span class="stat-label">Fragrâncias reveladas</span>
+          <strong id="discoveredCount" class="stat-value">0</strong>
+          <span id="progressLabel" class="stat-meta">0 de 4 territórios encontrados</span>
+        </div>
+
+        <div class="progress-card">
+          <div class="progress-header">
+            <span>Progresso do atlas</span>
+            <strong id="progressPercent">0%</strong>
+          </div>
+          <div class="progress-track" aria-hidden="true">
+            <div id="progressFill" class="progress-fill"></div>
+          </div>
+          <p>
+            Continue interagindo com os frascos para desbloquear novos rituais, notas e paisagens.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <section class="passport-content">
+      <div class="content-header">
+        <div>
+          <span class="eyebrow">Coleção ativa</span>
+          <h2>Fragrâncias descobertas</h2>
+        </div>
+        <p>
+          O passaporte pode ser alimentado pelo NFC do frasco. Nesta versão, os registros ficam
+          salvos localmente no navegador e já deixam a experiência pronta para integração futura.
+        </p>
+      </div>
+
+      <div id="discoveredGrid" class="passport-grid" aria-live="polite"></div>
+    </section>
+
+    <section class="passport-content pending">
+      <div class="content-header">
+        <div>
+          <span class="eyebrow">A descobrir</span>
+          <h2>Próximos territórios</h2>
+        </div>
+        <p>
+          Cada fragrância bloqueada funciona como um convite. O passaporte mostra que o atlas ainda
+          está incompleto e dá vontade de continuar a jornada.
+        </p>
+      </div>
+
+      <div id="lockedGrid" class="passport-grid"></div>
+    </section>
+
+    <section class="passport-content passport-actions">
+      <div class="content-header compact">
+        <div>
+          <span class="eyebrow">Simulação NFC</span>
+          <h2>Adicionar descoberta</h2>
+        </div>
+        <p>
+          Para testar o fluxo agora, use os botões abaixo. Depois irá ser trocado por leitura
+          real do identificador NFC.
+        </p>
+      </div>
+
+      <div id="nfcActions" class="action-grid"></div>
+    </section>
+  </main>
+
+  <script src="scripts/passport.js"></script>
+</body>
+</html>
