@@ -66,14 +66,13 @@ O usuário percorre uma jornada dividida em etapas:
 
 ```
 Aroma Atlas/
-├── main/
+├── docs/
 │   ├── index.html
 │   ├── style.css
 │   ├── script.js
 │   └── assets/
 │       ├── images/
 │       └── audio/
-├── docs/
 └── README.md
 ```
 
