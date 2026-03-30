@@ -68,8 +68,10 @@ O usuário percorre uma jornada dividida em etapas:
 Aroma Atlas/
 ├── docs/
 │   ├── index.html
-│   ├── style.css
-│   ├── script.js
+│   ├── styles/
+|      ├── style.css
+│   ├── scripts/
+│      ├── script.js
 │   └── assets/
 │       ├── images/
 │       └── audio/
