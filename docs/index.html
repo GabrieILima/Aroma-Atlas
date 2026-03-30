@@ -3,92 +3,190 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Aroma Atlas — Brasil</title>
-
-  <!-- FONTES -->
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400&family=Inter:wght@300;400&display=swap" rel="stylesheet">
-
-  <!-- CSS -->
+  <meta
+    name="description"
+    content="Uma jornada sensorial por uma fragrância inspirada na Amazônia brasileira."
+  >
+  <title>Aroma Atlas - Brasil</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600&family=Manrope:wght@300;400;500;600&display=swap"
+    rel="stylesheet"
+  >
   <link rel="stylesheet" href="styles/style.css">
 </head>
-
 <body>
-
-  <!-- LUZ -->
   <div class="light-overlay"></div>
+  <div class="grain-overlay"></div>
+  <div class="tunnel-transition" id="tunnelTransition"></div>
 
-  <!-- ÁUDIO -->
   <audio id="ambientSound" loop>
     <source src="assets/audio/floresta.mp3" type="audio/mpeg">
   </audio>
 
+  <button
+    id="soundToggle"
+    class="sound-toggle"
+    type="button"
+    aria-pressed="true"
+    aria-label="Ativar ou silenciar o som ambiente"
+  >
+    Som da mata: ligado
+  </button>
+
+  <nav class="progress-nav" aria-label="Progresso da experiência">
+    <button class="progress-dot active" type="button" data-target=".intro" aria-label="Ir para a introdução"></button>
+    <button class="progress-dot" type="button" data-target=".limiar" aria-label="Ir para o portal"></button>
+    <button class="progress-dot" type="button" data-target=".floresta" aria-label="Ir para a floresta"></button>
+    <button class="progress-dot" type="button" data-target=".saberes" aria-label="Ir para os saberes ancestrais"></button>
+    <button class="progress-dot" type="button" data-target=".fragrancia" aria-label="Ir para a fragrância"></button>
+    <button class="progress-dot" type="button" data-target=".final" aria-label="Ir para o encerramento"></button>
+  </nav>
+
   <main>
-
-  <!-- TÚNEL TRANSIÇÃO -->
-  <div class="tunnel-transition" id="tunnelTransition"></div>
-
-    <!-- HERO -->
     <section class="section hero intro">
-      <img src="assets/images/brasil-perfume.png" class="bottle" alt="Perfume Brasil">
-      <h1>Brasil</h1>
-      <p>Um território que respira vida, memória e essência.</p>
-      <span class="hint">toque aqui para iniciar</span>
+      <div class="ambient-orb ambient-orb-1"></div>
+      <div class="ambient-orb ambient-orb-2"></div>
+
+      <div class="hero-copy">
+        <span class="eyebrow">Aroma Atlas</span>
+        <img src="assets/images/brasil-perfume.png" class="bottle" alt="Frasco da fragrância Brasil">
+        <h1>Brasil</h1>
+        <p class="lede">
+          Uma fragrância inspirada na Amazônia brasileira, onde luz, umidade, resina e memória
+          se transformam em presença.
+        </p>
+        <p class="hero-text">
+          Atravesse uma paisagem viva: folhas esmagadas pela chuva, madeira aquecida pelo sol e
+          o sopro úmido de uma mata que nunca se cala.
+        </p>
+        <button id="enterExperience" class="cta-button" type="button">Atravessar o portal</button>
+        <span class="hint">use o toque, o scroll e o som para seguir a jornada</span>
+      </div>
     </section>
 
-    <!-- LIMIAR -->
-    <section class="section limiar">
-      <div>
+    <section class="section limiar" data-atmosphere="portal">
+      <div class="section-content">
+        <span class="eyebrow">Limiar</span>
         <h2>O Portal</h2>
-        <p>Uma transição entre o mundo físico e o sensorial.</p>
-        <span class="hint nav-hint" data-target=".floresta">toque aqui para avançar</span>
+        <p>
+          A entrada não acontece de uma vez. Ela se abre em camadas, como névoa dourada entre
+          galhos úmidos e silêncio suspenso.
+        </p>
+        <div class="quote-line"></div>
+        <p class="support-copy">
+          O mundo urbano perde contorno. A mata assume o ritmo e conduz o corpo para uma escuta
+          mais lenta.
+        </p>
+        <button class="nav-hint cta-link" type="button" data-target=".floresta">seguir para a mata</button>
       </div>
     </section>
 
-    <!-- FLORESTA -->
-    <section class="section floresta">
-      <div>
-        <h2>A Floresta</h2>
-        <p>O ar é denso, úmido, vivo. A natureza pulsa ao seu redor.</p>
-        <span class="hint nav-hint" data-target=".saberes">toque aqui para avançar</span>
+    <section class="section floresta" data-atmosphere="forest">
+      <div class="section-content">
+        <span class="eyebrow">Corpo da experiência</span>
+        <h2>A Floresta Respira</h2>
+        <p>
+          O ar é denso, mineral e verde. Um brilho atravessa a copa, enquanto partículas de água
+          e calor criam um perfume que parece nascer do próprio chão.
+        </p>
+        <div class="sensory-grid">
+          <article class="sensory-card">
+            <span class="card-label">Textura</span>
+            <p>Folha molhada, sombra viva, terra recém-desperta.</p>
+          </article>
+          <article class="sensory-card">
+            <span class="card-label">Ritmo</span>
+            <p>O tempo desacelera e o silêncio passa a ter profundidade.</p>
+          </article>
+          <article class="sensory-card">
+            <span class="card-label">Luz</span>
+            <p>Feixes dourados atravessam a mata como se revelassem um segredo.</p>
+          </article>
+        </div>
+        <button class="nav-hint cta-link" type="button" data-target=".saberes">aprofundar a jornada</button>
       </div>
     </section>
 
-    <!-- SABERES -->
-    <section class="section saberes">
-      <div>
+    <section class="section saberes" data-atmosphere="ancestral">
+      <div class="section-content">
+        <span class="eyebrow">Memória viva</span>
         <h2>Saberes Ancestrais</h2>
-        <p>Histórias, rituais e conexões profundas com a terra.</p>
-        <span class="hint nav-hint" data-target=".fragrancia">toque aqui para avançar</span>
+        <p>
+          A fragrância ganha sentido quando encontra gesto, rito e permanência. Ela não retrata
+          apenas um lugar: ecoa relações com a água, com a casca, com a resina e com o tempo.
+        </p>
+        <div class="ingredient-trail" aria-label="Ingredientes evocativos da fragrância">
+          <span>chuva quente</span>
+          <span>folhas verdes</span>
+          <span>resina dourada</span>
+          <span>madeira úmida</span>
+          <span>terra viva</span>
+        </div>
+        <button class="nav-hint cta-link" type="button" data-target=".fragrancia">sentir nota por nota</button>
       </div>
     </section>
 
-    <!-- FRAGRÂNCIA -->
-    <section class="section fragrancia">
-      <div class="nota topo">
-        <p>Notas de topo: frescor verde, folhas e umidade.</p>
+    <section class="section fragrancia" data-atmosphere="perfume">
+      <div class="section-heading">
+        <span class="eyebrow">Pirâmide olfativa</span>
+        <h2>A fragrância em camadas</h2>
+        <p>
+          A composição evolui como uma travessia: primeiro o frescor luminoso, depois o coração
+          úmido da floresta, por fim a permanência terrosa que fica sobre a pele.
+        </p>
       </div>
-      <div class="nota coracao">
-        <p>Notas de coração: flores e resinas da floresta.</p>
+
+      <div class="fragrance-pyramid">
+        <article class="nota topo">
+          <div class="note-inner">
+            <span class="note-tag">Notas de topo</span>
+            <h3>Claridade verde</h3>
+            <p>Folhas amassadas, brisa vegetal e o brilho fresco do amanhecer.</p>
+          </div>
+        </article>
+
+        <article class="nota coracao">
+          <div class="note-inner">
+            <span class="note-tag">Notas de coração</span>
+            <h3>Seiva e flor</h3>
+            <p>Umidade floral, resinas macias e a pulsação viva do interior da mata.</p>
+          </div>
+        </article>
+
+        <article class="nota fundo">
+          <div class="note-inner">
+            <span class="note-tag">Notas de fundo</span>
+            <h3>Raiz profunda</h3>
+            <p>Madeira aquecida, terra escura e um rastro que permanece como memória.</p>
+          </div>
+        </article>
       </div>
-      <div class="nota fundo">
-        <p>Notas de fundo: madeira, terra e profundidade.</p>
-      </div>
-      <span class="hint nav-hint" data-target=".final">toque aqui para avançar</span>
+
+      <button class="nav-hint cta-link" type="button" data-target=".final">encerrar a travessia</button>
     </section>
 
-    <!-- FINAL -->
-    <section class="section final">
-      <div>
+    <section class="section final" data-atmosphere="closure">
+      <div class="section-content final-content">
+        <span class="eyebrow">Território sensorial</span>
         <h2>Sinta o território</h2>
-        <p>Uma fragrância que não se usa. Se vive.</p>
-        <button id="restart">Reiniciar experiência</button>
+        <p class="lede">
+          Esta fragrância não tenta representar a Amazônia. Ela busca provocar presença: um corpo
+          cercado por vapor, madeira, luz filtrada e memória vegetal.
+        </p>
+        <p class="support-copy">
+          Quando a experiência termina, fica um rastro: calor úmido, silêncio verde e a sensação
+          de ter atravessado uma paisagem viva.
+        </p>
+        <div class="final-actions">
+          <button id="restart" class="cta-button" type="button">Reiniciar experiência</button>
+          <button class="nav-hint cta-link secondary" type="button" data-target=".intro">voltar ao início</button>
+        </div>
       </div>
     </section>
-
   </main>
 
-  <!-- JS -->
   <script src="scripts/main.js"></script>
-
 </body>
 </html>

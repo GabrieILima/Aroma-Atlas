@@ -1,4 +1,33 @@
-// Sempre voltar para a intro ao recarregar
+const audio = document.getElementById('ambientSound');
+const tunnel = document.getElementById('tunnelTransition');
+const light = document.querySelector('.light-overlay');
+const sections = Array.from(document.querySelectorAll('.section'));
+const navHints = document.querySelectorAll('.nav-hint');
+const progressDots = document.querySelectorAll('.progress-dot');
+const introSection = document.querySelector('.intro');
+const restartBtn = document.getElementById('restart');
+const enterBtn = document.getElementById('enterExperience');
+const soundToggle = document.getElementById('soundToggle');
+
+const ventoSrc = 'assets/audio/vento.mp3';
+const florestaSrc = 'assets/audio/floresta.mp3';
+
+let audioStarted = false;
+let audioMuted = false;
+let currentAudioType = null;
+let currentVisibleSection = introSection;
+let tunnelTimeout = null;
+let introActivated = false;
+
+const sectionThemes = {
+  intro: { lightY: '28%', intensity: 0.22, particleColor: '255, 236, 198', particleBoost: 0.2 },
+  limiar: { lightY: '26%', intensity: 0.28, particleColor: '231, 191, 111', particleBoost: 0.35 },
+  floresta: { lightY: '38%', intensity: 0.18, particleColor: '206, 232, 186', particleBoost: 0.25 },
+  saberes: { lightY: '33%', intensity: 0.16, particleColor: '211, 227, 197', particleBoost: 0.22 },
+  fragrancia: { lightY: '40%', intensity: 0.2, particleColor: '246, 240, 222', particleBoost: 0.18 },
+  final: { lightY: '30%', intensity: 0.24, particleColor: '231, 191, 111', particleBoost: 0.12 }
+};
+
 window.addEventListener('beforeunload', () => {
   window.scrollTo(0, 0);
 });
@@ -6,309 +35,278 @@ window.addEventListener('beforeunload', () => {
 window.addEventListener('load', () => {
   setTimeout(() => {
     window.scrollTo(0, 0);
-    // Sempre inicia com vento na intro
     setAudioSection('vento', true);
-  }, 10);
+    applySectionTheme(introSection);
+    updateProgress(introSection);
+  }, 30);
 });
-// NAVEGAÇÃO ENTRE SEÇÕES COM TÚNEL DO TEMPO
-const tunnel = document.getElementById('tunnelTransition');
-let tunnelTimeout = null;
 
-document.querySelectorAll('.nav-hint').forEach(hint => {
-  hint.addEventListener('click', function(e) {
-    const targetSelector = this.getAttribute('data-target');
-    const targetSection = document.querySelector(targetSelector);
-    if (targetSection) {
-      // Ativa efeito túnel
-      tunnel.classList.add('active');
-      clearTimeout(tunnelTimeout);
-      tunnelTimeout = setTimeout(() => {
-        tunnel.classList.remove('active');
-        window.scrollTo({
-          top: targetSection.offsetTop,
-          behavior: 'smooth'
-        });
-      }, 600);
-    }
-    // Inicia música só a partir da floresta
-    if (targetSelector === '.floresta' && !audioStarted) {
-      startExperience();
-    }
-    e.stopPropagation();
-  });
-});
-// ELEMENTOS
-const audio = document.getElementById("ambientSound");
-const ventoSrc = "assets/audio/vento.mp3";
-const florestaSrc = "assets/audio/floresta.mp3";
-const introSection = document.querySelector(".intro");
-const restartBtn = document.getElementById("restart");
-const sections = document.querySelectorAll(".section");
-const light = document.querySelector(".light-overlay");
-
-
-let audioStarted = false;
-let fadeOutInterval = null;
-let fadeInInterval = null;
-let currentAudioType = null;
-
-function startExperience() {
-  if (!audioStarted) {
-    audio.volume = 0;
-    audio.play().catch(() => {});
-
-    let volume = 0;
-    const fadeAudio = setInterval(() => {
-      if (volume < 0.4) {
-        volume += 0.02;
-        audio.volume = volume;
-      } else {
-        clearInterval(fadeAudio);
-      }
-    }, 200);
-
-    audioStarted = true;
+function scrollToSection(targetSection, withTunnel = true) {
+  if (!targetSection) {
+    return;
   }
-}
 
-
-// ENTRADA COM TÚNEL
-introSection.addEventListener("click", () => {
-  tunnel.classList.add('active');
-  clearTimeout(tunnelTimeout);
-  setTimeout(() => {
+  const performScroll = () => {
     window.scrollTo({
-      top: window.innerHeight,
+      top: targetSection.offsetTop,
       behavior: 'smooth'
     });
-    setTimeout(() => {
+  };
+
+  if (!withTunnel) {
+    performScroll();
+    return;
+  }
+
+  tunnel.classList.add('active');
+  clearTimeout(tunnelTimeout);
+  tunnelTimeout = window.setTimeout(() => {
+    performScroll();
+    window.setTimeout(() => {
       tunnel.classList.remove('active');
-    }, 600);
-  }, 600);
-});
-
-
-// RESTART
-
-
-restartBtn.addEventListener("click", () => {
-  window.scrollTo({
-    top: 0,
-    behavior: "smooth"
-  });
-  setAudioSection('vento');
-  audioStarted = false;
-});
-
-// Função central para trocar o áudio suavemente
-function setAudioSection(tipo, forcePlay = false) {
-  // Evita triggers múltiplos e troca desnecessária
-  if (currentAudioType === tipo && !forcePlay) return;
-  currentAudioType = tipo;
-  let targetSrc = tipo === 'vento' ? ventoSrc : florestaSrc;
-  // Limpa fades antigos
-  if (fadeOutInterval) { clearInterval(fadeOutInterval); fadeOutInterval = null; }
-  if (fadeInInterval) { clearInterval(fadeInInterval); fadeInInterval = null; }
-  // Se já está no áudio certo e volume correto, não faz nada
-  if (audio.src.includes(targetSrc) && ((tipo === 'vento' && audio.volume < 0.51) || (tipo === 'floresta' && audio.volume > 0.49))) return;
-  // Fade out
-  fadeOutInterval = setInterval(() => {
-    if (audio.volume > 0.05) {
-      audio.volume = Math.max(0, audio.volume - 0.05);
-    } else {
-      clearInterval(fadeOutInterval);
-      fadeOutInterval = null;
-      audio.pause();
-      audio.src = targetSrc;
-      audio.load();
-      audio.oncanplaythrough = () => {
-        // Tenta autoplay, se falhar aguarda interação do usuário
-        let playPromise = audio.play();
-        if (playPromise !== undefined) {
-          playPromise.catch(() => {
-            const tryPlay = () => {
-              audio.play().catch(()=>{});
-              document.removeEventListener('click', tryPlay);
-            };
-            document.addEventListener('click', tryPlay);
-          });
-        }
-        if (tipo === 'vento') {
-          // Fade in só para vento
-          fadeInInterval = setInterval(() => {
-            if (audio.volume < 0.5) {
-              audio.volume = Math.min(0.5, audio.volume + 0.05);
-            } else {
-              clearInterval(fadeInInterval);
-              fadeInInterval = null;
-            }
-          }, 80);
-        } else {
-          // Floresta: volume direto
-          audio.volume = 0.5;
-        }
-      };
-    }
-  }, 60);
+    }, 650);
+  }, 520);
 }
 
+function tryStartAudio() {
+  if (audioMuted) {
+    return;
+  }
 
-// NAVEGAÇÃO ENTRE SEÇÕES
+  audio.play().catch(() => {});
+  audioStarted = true;
+}
 
+function setAudioSection(type, forcePlay = false) {
+  if (currentAudioType === type && !forcePlay) {
+    return;
+  }
 
-const observer = new IntersectionObserver((entries) => {
-  entries.forEach(entry => {
-    if (entry.isIntersecting) {
-      entry.target.classList.add("active");
-    }
+  currentAudioType = type;
+  const targetSrc = type === 'vento' ? ventoSrc : florestaSrc;
+  const targetVolume = type === 'vento' ? 0.35 : 0.52;
+
+  if (!audio.src.includes(targetSrc)) {
+    audio.src = targetSrc;
+    audio.load();
+  }
+
+  if (!audioMuted) {
+    tryStartAudio();
+  }
+
+  audio.volume = targetVolume;
+}
+
+function updateSoundToggle() {
+  soundToggle.textContent = audioMuted ? 'Som da mata: desligado' : 'Som da mata: ligado';
+  soundToggle.setAttribute('aria-pressed', String(!audioMuted));
+  document.body.classList.toggle('sound-off', audioMuted);
+}
+
+function activateExperience() {
+  if (!introActivated) {
+    introActivated = true;
+    scrollToSection(document.querySelector('.limiar'));
+  }
+
+  if (!audioMuted) {
+    tryStartAudio();
+  }
+}
+
+function updateProgress(activeSection) {
+  const activeClassList = activeSection.classList;
+
+  progressDots.forEach((dot) => {
+    const matches = Array.from(activeClassList).some((className) => dot.dataset.target === `.${className}`);
+    dot.classList.toggle('active', matches);
   });
-}, {
-  threshold: 0.3
+}
+
+function applySectionTheme(section) {
+  if (!section) {
+    return;
+  }
+
+  currentVisibleSection = section;
+  updateProgress(section);
+
+  const key = Array.from(section.classList).find((className) => sectionThemes[className]);
+  const theme = sectionThemes[key] || sectionThemes.intro;
+
+  light.style.setProperty('--light-y', theme.lightY);
+  light.style.setProperty('--light-intensity', theme.intensity.toString());
+  particleState.color = theme.particleColor;
+  particleState.boost = theme.particleBoost;
+
+  if (section.classList.contains('intro') || section.classList.contains('limiar')) {
+    setAudioSection('vento');
+  } else {
+    setAudioSection('floresta');
+  }
+}
+
+navHints.forEach((hint) => {
+  hint.addEventListener('click', (event) => {
+    event.stopPropagation();
+    const targetSection = document.querySelector(hint.dataset.target);
+    if (!targetSection) {
+      return;
+    }
+
+    if (!audioStarted && !audioMuted) {
+      tryStartAudio();
+    }
+
+    scrollToSection(targetSection);
+  });
 });
 
-sections.forEach(section => observer.observe(section));
+progressDots.forEach((dot) => {
+  dot.addEventListener('click', () => {
+    const targetSection = document.querySelector(dot.dataset.target);
+    scrollToSection(targetSection, false);
+  });
+});
 
+enterBtn.addEventListener('click', activateExperience);
+introSection.addEventListener('click', (event) => {
+  if (event.target.closest('button')) {
+    return;
+  }
 
-window.addEventListener("scroll", () => {
+  activateExperience();
+});
+
+restartBtn.addEventListener('click', () => {
+  introActivated = false;
+  scrollToSection(introSection, false);
+  applySectionTheme(introSection);
+  setAudioSection('vento', true);
+});
+
+soundToggle.addEventListener('click', () => {
+  audioMuted = !audioMuted;
+  if (audioMuted) {
+    audio.pause();
+  } else {
+    setAudioSection(currentVisibleSection.classList.contains('intro') || currentVisibleSection.classList.contains('limiar') ? 'vento' : 'floresta', true);
+    tryStartAudio();
+  }
+
+  updateSoundToggle();
+});
+
+const observer = new IntersectionObserver(
+  (entries) => {
+    entries.forEach((entry) => {
+      if (!entry.isIntersecting) {
+        return;
+      }
+
+      entry.target.classList.add('active');
+      applySectionTheme(entry.target);
+    });
+  },
+  { threshold: 0.45 }
+);
+
+sections.forEach((section) => observer.observe(section));
+
+window.addEventListener('scroll', () => {
   const scrollY = window.scrollY;
-  const pageHeight = document.body.scrollHeight - window.innerHeight;
+  const pageHeight = Math.max(document.body.scrollHeight - window.innerHeight, 1);
   const progress = scrollY / pageHeight;
 
-  //  SOM DINÂMICO
-  let dynamicVolume;
-
-  if (progress < 0.3) {
-    dynamicVolume = 0.2 + progress;
-  } else if (progress < 0.7) {
-    dynamicVolume = 0.5;
-  } else {
-    dynamicVolume = 0.5 - (progress - 0.7);
-  }
-
-  audio.volume = Math.max(0.2, Math.min(dynamicVolume, 0.6));
-
-  // Troca de áudio conforme a seção visível
-  let currentSection = null;
-  sections.forEach(section => {
-    const rect = section.getBoundingClientRect();
-    if (rect.top <= window.innerHeight * 0.5 && rect.bottom > window.innerHeight * 0.3) {
-      currentSection = section;
-    }
-  });
-  if (currentSection) {
-    if (currentSection.classList.contains("intro") || currentSection.classList.contains("limiar")) {
-      setAudioSection('vento');
-    } else {
-      setAudioSection('floresta');
-    }
-  }
-
-  // PARALLAX REAL (NAS CAMADAS)
   sections.forEach((section) => {
-    const rect = section.getBoundingClientRect();
     const offset = section.getBoundingClientRect().top;
+    const speed = offset * 0.045;
+    const scale = 1.06 + Math.min(Math.abs(offset) / 3000, 0.09);
 
-    const speed = offset * 0.05;
-
-    section.style.setProperty(
-      "--parallax-offset",
-      `${speed}px`
-    );
-
-    // aplica direto na pseudo camada via style hack
-    section.style.setProperty(
-      "--scale-dynamic",
-      1.1 + Math.abs(offset) / 2000
-    );
+    section.style.setProperty('--parallax-offset', `${speed}px`);
+    section.style.setProperty('--scale-dynamic', scale.toString());
   });
 
-  const posY = 30 + progress * 40;
-
-  let intensity;
-
-  if (progress < 0.3) {
-    intensity = progress * 0.3;
-  } else if (progress < 0.7) {
-    intensity = 0.3;
-  } else {
-    intensity = 0.3 - (progress - 0.7);
-  }
-
-  light.style.setProperty("--lightY", `${posY}%`);
-  light.style.setProperty("--lightIntensity", intensity);
+  const x = 50 + Math.sin(progress * Math.PI * 2) * 10;
+  light.style.setProperty('--light-x', `${x}%`);
 });
 
-// LUZ SEGUE MOUSE
-
-window.addEventListener("mousemove", (e) => {
-  const x = (e.clientX / window.innerWidth) * 100;
-  const y = (e.clientY / window.innerHeight) * 100;
-
-  light.style.background = `
-    radial-gradient(
-      circle at ${x}% ${y}%,
-      rgba(255,255,255,0.12),
-      transparent 60%
-    )
-  `;
+window.addEventListener('mousemove', (event) => {
+  const x = (event.clientX / window.innerWidth) * 100;
+  const y = (event.clientY / window.innerHeight) * 100;
+  light.style.setProperty('--light-x', `${x}%`);
+  light.style.setProperty('--light-y', `${y}%`);
 });
 
-// PARTÍCULAS
-
-const canvas = document.createElement("canvas");
+const canvas = document.createElement('canvas');
 document.body.appendChild(canvas);
 
-const ctx = canvas.getContext("2d");
+const ctx = canvas.getContext('2d');
+canvas.style.position = 'fixed';
+canvas.style.inset = '0';
+canvas.style.width = '100%';
+canvas.style.height = '100%';
+canvas.style.pointerEvents = 'none';
 
-canvas.style.position = "fixed";
-canvas.style.top = 0;
-canvas.style.left = 0;
-canvas.style.width = "100%";
-canvas.style.height = "100%";
-canvas.style.pointerEvents = "none";
-canvas.style.zIndex = "0";
-
-canvas.width = window.innerWidth;
-canvas.height = window.innerHeight;
+const particleState = {
+  color: sectionThemes.intro.particleColor,
+  boost: sectionThemes.intro.particleBoost
+};
 
 let particles = [];
 
+function resizeCanvas() {
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+}
+
 function createParticles() {
-  for (let i = 0; i < 60; i++) {
-    particles.push({
-      x: Math.random() * canvas.width,
-      y: Math.random() * canvas.height,
-      radius: Math.random() * 2,
-      speedY: Math.random() * 0.3 + 0.1,
-      opacity: Math.random() * 0.3
-    });
-  }
+  particles = Array.from({ length: 70 }, () => ({
+    x: Math.random() * canvas.width,
+    y: Math.random() * canvas.height,
+    radius: Math.random() * 2.2 + 0.5,
+    speedY: Math.random() * 0.35 + 0.08,
+    driftX: Math.random() * 0.2 - 0.1,
+    opacity: Math.random() * 0.24 + 0.04
+  }));
 }
 
 function animateParticles() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-  particles.forEach((p) => {
-    p.y -= p.speedY;
+  particles.forEach((particle) => {
+    particle.y -= particle.speedY + particleState.boost * 0.05;
+    particle.x += particle.driftX;
 
-    if (p.y < 0) {
-      p.y = canvas.height;
-      p.x = Math.random() * canvas.width;
+    if (particle.y < -10) {
+      particle.y = canvas.height + 10;
+      particle.x = Math.random() * canvas.width;
+    }
+
+    if (particle.x < -10) {
+      particle.x = canvas.width + 10;
+    }
+
+    if (particle.x > canvas.width + 10) {
+      particle.x = -10;
     }
 
     ctx.beginPath();
-    ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
-    ctx.fillStyle = `rgba(255,255,255,${p.opacity})`;
+    ctx.arc(particle.x, particle.y, particle.radius, 0, Math.PI * 2);
+    ctx.fillStyle = `rgba(${particleState.color}, ${particle.opacity})`;
     ctx.fill();
   });
 
   requestAnimationFrame(animateParticles);
 }
 
-window.addEventListener("resize", () => {
-  canvas.width = window.innerWidth;
-  canvas.height = window.innerHeight;
+window.addEventListener('resize', () => {
+  resizeCanvas();
+  createParticles();
 });
 
+updateSoundToggle();
+resizeCanvas();
 createParticles();
 animateParticles();
