@@ -1,4 +1,3 @@
-// =========================
 // Sempre voltar para a intro ao recarregar
 window.addEventListener('beforeunload', () => {
   window.scrollTo(0, 0);
@@ -7,6 +6,8 @@ window.addEventListener('beforeunload', () => {
 window.addEventListener('load', () => {
   setTimeout(() => {
     window.scrollTo(0, 0);
+    // Sempre inicia com vento na intro
+    setAudioSection('vento', true);
   }, 10);
 });
 // NAVEGAÇÃO ENTRE SEÇÕES COM TÚNEL DO TEMPO
@@ -37,17 +38,19 @@ document.querySelectorAll('.nav-hint').forEach(hint => {
   });
 });
 // ELEMENTOS
-// =========================
 const audio = document.getElementById("ambientSound");
+const ventoSrc = "assets/audio/vento.mp3";
+const florestaSrc = "assets/audio/floresta.mp3";
 const introSection = document.querySelector(".intro");
 const restartBtn = document.getElementById("restart");
 const sections = document.querySelectorAll(".section");
 const light = document.querySelector(".light-overlay");
 
-// =========================
-// ÁUDIO
-// =========================
+
 let audioStarted = false;
+let fadeOutInterval = null;
+let fadeInInterval = null;
+let currentAudioType = null;
 
 function startExperience() {
   if (!audioStarted) {
@@ -68,10 +71,8 @@ function startExperience() {
   }
 }
 
-// =========================
-// ENTRADA
-// =========================
-// ENTRADA COM TÚNEL DO TEMPO
+
+// ENTRADA COM TÚNEL
 introSection.addEventListener("click", () => {
   tunnel.classList.add('active');
   clearTimeout(tunnelTimeout);
@@ -86,27 +87,75 @@ introSection.addEventListener("click", () => {
   }, 600);
 });
 
-// =========================
+
 // RESTART
-// =========================
+
+
 restartBtn.addEventListener("click", () => {
   window.scrollTo({
     top: 0,
     behavior: "smooth"
   });
-
-  audio.pause();
-  audio.currentTime = 0;
+  setAudioSection('vento');
   audioStarted = false;
 });
 
-// =========================
-// NAVEGAÇÃO ENTRE SEÇÕES
-// =========================
+// Função central para trocar o áudio suavemente
+function setAudioSection(tipo, forcePlay = false) {
+  // Evita triggers múltiplos e troca desnecessária
+  if (currentAudioType === tipo && !forcePlay) return;
+  currentAudioType = tipo;
+  let targetSrc = tipo === 'vento' ? ventoSrc : florestaSrc;
+  // Limpa fades antigos
+  if (fadeOutInterval) { clearInterval(fadeOutInterval); fadeOutInterval = null; }
+  if (fadeInInterval) { clearInterval(fadeInInterval); fadeInInterval = null; }
+  // Se já está no áudio certo e volume correto, não faz nada
+  if (audio.src.includes(targetSrc) && ((tipo === 'vento' && audio.volume < 0.51) || (tipo === 'floresta' && audio.volume > 0.49))) return;
+  // Fade out
+  fadeOutInterval = setInterval(() => {
+    if (audio.volume > 0.05) {
+      audio.volume = Math.max(0, audio.volume - 0.05);
+    } else {
+      clearInterval(fadeOutInterval);
+      fadeOutInterval = null;
+      audio.pause();
+      audio.src = targetSrc;
+      audio.load();
+      audio.oncanplaythrough = () => {
+        // Tenta autoplay, se falhar aguarda interação do usuário
+        let playPromise = audio.play();
+        if (playPromise !== undefined) {
+          playPromise.catch(() => {
+            const tryPlay = () => {
+              audio.play().catch(()=>{});
+              document.removeEventListener('click', tryPlay);
+            };
+            document.addEventListener('click', tryPlay);
+          });
+        }
+        if (tipo === 'vento') {
+          // Fade in só para vento
+          fadeInInterval = setInterval(() => {
+            if (audio.volume < 0.5) {
+              audio.volume = Math.min(0.5, audio.volume + 0.05);
+            } else {
+              clearInterval(fadeInInterval);
+              fadeInInterval = null;
+            }
+          }, 80);
+        } else {
+          // Floresta: volume direto
+          audio.volume = 0.5;
+        }
+      };
+    }
+  }, 60);
+}
 
-// =========================
-// INTERSECTION OBSERVER (SUAVIDADE PRO)
-// =========================
+
+// NAVEGAÇÃO ENTRE SEÇÕES
+
+
 const observer = new IntersectionObserver((entries) => {
   entries.forEach(entry => {
     if (entry.isIntersecting) {
@@ -119,15 +168,13 @@ const observer = new IntersectionObserver((entries) => {
 
 sections.forEach(section => observer.observe(section));
 
-// =========================
-// SCROLL MASTER (OTIMIZADO)
-// =========================
+
 window.addEventListener("scroll", () => {
   const scrollY = window.scrollY;
   const pageHeight = document.body.scrollHeight - window.innerHeight;
   const progress = scrollY / pageHeight;
 
-  // 🎧 SOM DINÂMICO
+  //  SOM DINÂMICO
   let dynamicVolume;
 
   if (progress < 0.3) {
@@ -140,10 +187,26 @@ window.addEventListener("scroll", () => {
 
   audio.volume = Math.max(0.2, Math.min(dynamicVolume, 0.6));
 
-  // 🌿 PARALLAX REAL (NAS CAMADAS)
+  // Troca de áudio conforme a seção visível
+  let currentSection = null;
+  sections.forEach(section => {
+    const rect = section.getBoundingClientRect();
+    if (rect.top <= window.innerHeight * 0.5 && rect.bottom > window.innerHeight * 0.3) {
+      currentSection = section;
+    }
+  });
+  if (currentSection) {
+    if (currentSection.classList.contains("intro") || currentSection.classList.contains("limiar")) {
+      setAudioSection('vento');
+    } else {
+      setAudioSection('floresta');
+    }
+  }
+
+  // PARALLAX REAL (NAS CAMADAS)
   sections.forEach((section) => {
     const rect = section.getBoundingClientRect();
-    const offset = rect.top;
+    const offset = section.getBoundingClientRect().top;
 
     const speed = offset * 0.05;
 
@@ -159,7 +222,6 @@ window.addEventListener("scroll", () => {
     );
   });
 
-  // 🎥 LUZ (SCROLL BASE)
   const posY = 30 + progress * 40;
 
   let intensity;
@@ -176,9 +238,8 @@ window.addEventListener("scroll", () => {
   light.style.setProperty("--lightIntensity", intensity);
 });
 
-// =========================
-// LUZ SEGUE MOUSE (CAMADA PREMIUM)
-// =========================
+// LUZ SEGUE MOUSE
+
 window.addEventListener("mousemove", (e) => {
   const x = (e.clientX / window.innerWidth) * 100;
   const y = (e.clientY / window.innerHeight) * 100;
@@ -192,9 +253,8 @@ window.addEventListener("mousemove", (e) => {
   `;
 });
 
-// =========================
 // PARTÍCULAS
-// =========================
+
 const canvas = document.createElement("canvas");
 document.body.appendChild(canvas);
 

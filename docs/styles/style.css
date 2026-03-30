@@ -1,6 +1,6 @@
-/* ========================= */
-/* TÚNEL DO TEMPO (TRANSIÇÃO) */
-/* ========================= */
+
+/*(TRANSIÇÃO) */
+
 .tunnel-transition {
   position: fixed;
   top: 0;
@@ -33,19 +33,18 @@
   opacity: 1;
   transform: scale(1.18) translateZ(0);
 }
-}
-/* ========================= */
+
 /* RESET */
-/* ========================= */
+
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
 }
 
-/* ========================= */
+
 /* BODY */
-/* ========================= */
+
 body {
   font-family: 'Inter', sans-serif;
   background: #0B1F1A;
@@ -55,18 +54,18 @@ body {
   padding: 0;
 }
 
-/* ========================= */
+
 /* MAIN */
-/* ========================= */
+
 main {
   width: 100%;
   margin: 0;
   padding: 0;
 }
 
-/* ========================= */
+
 /* SEÇÕES */
-/* ========================= */
+
 .section {
   height: 100vh;
   width: 100%;
@@ -89,9 +88,9 @@ main {
   z-index: 3;
 }
 
-/* ========================= */
+
 /* TEXTURA BASE GLOBAL */
-/* ========================= */
+
 .section::before {
   content: "";
   position: absolute;
@@ -109,9 +108,9 @@ main {
   animation: texturaMove 40s ease-in-out infinite;
 }
 
-/* ========================= */
+
 /* IMAGENS ESPECÍFICAS (CAMADA EXTRA) */
-/* ========================= */
+
 
 .section::after {
   content: "";
@@ -143,9 +142,9 @@ main {
   filter: blur(1px) brightness(0.8);
 }
 
-/* ========================= */
+
 /* ANIMAÇÃO TEXTURA */
-/* ========================= */
+
 @keyframes texturaMove {
   0% {
     transform: scale(1) translateY(0);
@@ -158,9 +157,9 @@ main {
   }
 }
 
-/* ========================= */
+
 /* HERO */
-/* ========================= */
+
 .hero {
   flex-direction: column;
   background: radial-gradient(circle at center, #132E27, #0B1F1A);
@@ -181,9 +180,9 @@ main {
   100% { transform: translateY(0px); }
 }
 
-/* ========================= */
+
 /* BACKGROUNDS BASE */
-/* ========================= */
+
 .intro {
   background: radial-gradient(circle at center, #132E27, #0B1F1A);
 }
@@ -200,9 +199,8 @@ main {
   background: linear-gradient(180deg, #132E27, #1F3D2B);
 }
 
-/* ========================= */
 /* TIPOGRAFIA */
-/* ========================= */
+
 h1, h2 {
   font-family: 'Playfair Display', serif;
   font-weight: 400;
@@ -230,9 +228,9 @@ p {
   margin-top: 10px;
 }
 
-/* ========================= */
+
 /* FRAGRÂNCIA */
-/* ========================= */
+
 .fragrancia {
   display: flex;
   flex-direction: column;
@@ -259,17 +257,16 @@ p {
   background: linear-gradient(180deg, #0F261F, #0B1F1A);
 }
 
-/* ========================= */
-/* FINAL */
-/* ========================= */
+
+
 .final {
   background: radial-gradient(circle at center, #132E27, #0B1F1A);
   flex-direction: column;
 }
 
-/* ========================= */
+
 /* BOTÃO */
-/* ========================= */
+
 button {
   margin-top: 25px;
   padding: 12px 24px;
@@ -287,9 +284,7 @@ button:hover {
   color: #0B1F1A;
 }
 
-/* ========================= */
-/* LUZ CINEMATOGRÁFICA */
-/* ========================= */
+
 .light-overlay {
   position: fixed;
   top: 0;
@@ -309,9 +304,7 @@ button:hover {
   mix-blend-mode: screen;
   transition: all 0.6s ease;
 }
-/* ========================= */
-/* PARALLAX + VIDA */
-/* ========================= */
+
 
 /* Camada que vai se mover */
 .section::after {
@@ -329,10 +322,6 @@ button:hover {
   opacity: 1;
   transform: translateY(0);
 }
-
-/* ========================= */
-/* FRAGRÂNCIA SENSORIAL */
-/* ========================= */
 
 .fragrancia {
   display: flex;
@@ -392,30 +381,30 @@ button:hover {
   z-index: 2;
 }
 
-/* ========================= */
+
 /* TOPO */
-/* ========================= */
+
 .topo::before {
   background-image: url("../assets/images/Raio\ de\ sol\ na\ floresta\ ao\ amanhecer.png");
 }
 
-/* ========================= */
+
 /* CORAÇÃO */
-/* ========================= */
+
 .coracao::before {
   background-image: url("../assets/images/Raio\ de\ sol\ na\ floresta\ densa.png");
 }
 
-/* ========================= */
+
 /* FUNDO */
-/* ========================= */
+
 .fundo::before {
   background-image: url("../assets/images/Raízes\ iluminadas\ na\ floresta\ tropical.png");
 }
 
-/* ========================= */
+
 /* VARIAÇÃO DE LUZ (SUTIL) */
-/* ========================= */
+
 .topo::after {
   background: linear-gradient(
     rgba(0,0,0,0.4),
