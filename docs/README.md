@@ -158,3 +158,4 @@ Abra uma *issue* ou entre em contato para dúvidas e colaborações.
 
 > "Aroma Atlas não apresenta fragrâncias.
 > Ele faz o usuário senti-las antes mesmo de existirem fisicamente."
+>Verifique o resultado em: https://gabrieilima.github.io/Aroma-Atlas/
