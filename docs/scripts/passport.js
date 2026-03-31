@@ -186,6 +186,7 @@ const collectionStatusCopy = document.getElementById("collectionStatusCopy");
 const continentBadge = document.getElementById("continentBadge");
 const continentBadgeCopy = document.getElementById("continentBadgeCopy");
 const collectionBadges = document.getElementById("collectionBadges");
+const revealFocus = document.getElementById("revealFocus");
 
 const familyOrder = [
   "Territórios Tropicais",
@@ -221,6 +222,7 @@ let toastTimeout = null;
 let audioContext = null;
 let lastDiscoveredId = null;
 let revealResetTimeout = null;
+let focusResetTimeout = null;
 
 function getBaseDiscoveredIds() {
   return passportCatalog.filter((item) => item.status === "discovered").map((item) => item.id);
@@ -353,10 +355,20 @@ function playDiscoverySound(item) {
 
 function showDiscoveryToast(item) {
   if (!discoveryToast) return;
-  discoveryToast.textContent = `${item.country} revelado no passaporte sensorial`;
+  discoveryToast.textContent = `${item.country} incorporado ao arquivo privado`;
   discoveryToast.classList.add("visible");
   if (toastTimeout) window.clearTimeout(toastTimeout);
   toastTimeout = window.setTimeout(() => discoveryToast.classList.remove("visible"), 2200);
+}
+
+function triggerRevealFocus() {
+  document.body.classList.add("focus-reveal");
+  if (revealFocus) revealFocus.classList.add("visible");
+  if (focusResetTimeout) window.clearTimeout(focusResetTimeout);
+  focusResetTimeout = window.setTimeout(() => {
+    document.body.classList.remove("focus-reveal");
+    if (revealFocus) revealFocus.classList.remove("visible");
+  }, 1900);
 }
 
 function getCollectorLabel(discoveredCountValue) {
@@ -482,7 +494,10 @@ function renderOwnership(items) {
   collectionBadges.innerHTML = badges.length
     ? badges.map((badge) => `
         <article class="collection-badge-card">
-          <span class="collection-badge-ring" aria-hidden="true"></span>
+          <span class="collection-medallion" aria-hidden="true">
+            <span class="collection-medallion-outer"></span>
+            <span class="collection-medallion-core">${badge.label.slice(0, 2).toUpperCase()}</span>
+          </span>
           <div class="collection-badge-body">
             <span class="certificate-label">${badge.type}</span>
             <strong class="ownership-value">${badge.label}</strong>
@@ -709,6 +724,7 @@ nfcActions.addEventListener("click", (event) => {
   const nextOrder = discoveryHistory.length ? Math.max(...discoveryHistory.map((entry) => entry.order)) + 1 : 1;
   discoveryHistory.push({ id, order: nextOrder, discoveredAt: new Date().toISOString(), base: false });
   lastDiscoveredId = id;
+  triggerRevealFocus();
   savePassportState();
   playDiscoverySound(item);
   showDiscoveryToast(item);
