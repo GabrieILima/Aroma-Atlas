@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
@@ -19,6 +19,7 @@
 <body>
   <div class="page-glow"></div>
   <div class="page-grain"></div>
+  <div id="discoveryToast" class="discovery-toast" aria-live="polite" aria-atomic="true"></div>
 
   <header class="topbar">
     <a class="topbar-link" href="index.html">voltar para a jornada</a>
@@ -29,6 +30,11 @@
     <section class="passport-hero">
       <div class="hero-copy">
         <span class="eyebrow">Passaporte sensorial</span>
+        <div class="collection-seal" aria-hidden="true">
+          <span class="seal-ring">
+            <span class="seal-core">Coleção<br>Aroma Atlas</span>
+          </span>
+        </div>
         <h1>Seu mapa de descobertas</h1>
         <p class="lede">
           Cada toque NFC no frasco revela um território olfativo. Aqui ficam registrados os aromas
@@ -40,7 +46,7 @@
         <div class="stat-card">
           <span class="stat-label">Fragrâncias reveladas</span>
           <strong id="discoveredCount" class="stat-value">0</strong>
-          <span id="progressLabel" class="stat-meta">0 de 4 territórios encontrados</span>
+          <span id="progressLabel" class="stat-meta">0 de 10 territórios encontrados</span>
         </div>
 
         <div class="progress-card">
@@ -63,6 +69,11 @@
         <div>
           <span class="eyebrow">Coleção ativa</span>
           <h2>Fragrâncias descobertas</h2>
+          <div class="collection-mark" aria-hidden="true">
+            <span class="collection-mark-ring">
+              <span class="collection-mark-text">coleção ativa</span>
+            </span>
+          </div>
         </div>
         <p>
           O passaporte pode ser alimentado pelo NFC do frasco. Nesta versão, os registros ficam
@@ -86,6 +97,21 @@
       </div>
 
       <div id="lockedGrid" class="passport-grid"></div>
+    </section>
+
+    <section class="passport-content history-panel">
+      <div class="content-header compact">
+        <div>
+          <span class="eyebrow">Linha de revelação</span>
+          <h2>Histórico de descobertas</h2>
+        </div>
+        <p>
+          Cada leitura fica registrada com ordem e data para transformar o passaporte em um acervo
+          vivo de revelações sensoriais.
+        </p>
+      </div>
+
+      <div id="historyList" class="history-list" aria-live="polite"></div>
     </section>
 
     <section class="passport-content passport-actions">

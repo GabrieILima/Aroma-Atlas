@@ -1,14 +1,10 @@
-﻿:root {
+:root {
   --bg: #080808;
-  --bg-soft: #13120f;
-  --panel: rgba(20, 19, 17, 0.88);
-  --panel-soft: rgba(31, 29, 25, 0.8);
   --line: rgba(216, 186, 127, 0.14);
   --line-strong: rgba(216, 186, 127, 0.28);
   --text: #f5efe2;
   --muted: rgba(245, 239, 226, 0.68);
   --gold: #d7b46c;
-  --gold-soft: rgba(215, 180, 108, 0.14);
   --olive: #7f8e63;
   --shadow: 0 32px 96px rgba(0, 0, 0, 0.46);
 }
@@ -52,6 +48,31 @@ button {
   background-image: url("../assets/images/textura-floresta.png");
   opacity: 0.07;
   mix-blend-mode: soft-light;
+}
+
+.discovery-toast {
+  position: fixed;
+  top: 24px;
+  left: 50%;
+  z-index: 30;
+  min-width: min(420px, calc(100vw - 2rem));
+  padding: 0.95rem 1.25rem;
+  border: 1px solid var(--line-strong);
+  border-radius: 999px;
+  background: rgba(26, 24, 20, 0.94);
+  color: var(--text);
+  text-align: center;
+  transform: translate(-50%, -18px);
+  opacity: 0;
+  box-shadow: 0 20px 48px rgba(0, 0, 0, 0.35);
+  backdrop-filter: blur(16px);
+  transition: opacity 0.35s ease, transform 0.35s ease;
+  pointer-events: none;
+}
+
+.discovery-toast.visible {
+  opacity: 1;
+  transform: translate(-50%, 0);
 }
 
 .topbar {
@@ -135,7 +156,8 @@ button {
 .passport-panel,
 .content-header,
 .passport-grid,
-.action-grid {
+.action-grid,
+.history-list {
   position: relative;
   z-index: 1;
 }
@@ -146,6 +168,51 @@ button {
   align-content: center;
 }
 
+.collection-seal {
+  margin: 0.25rem 0 0.5rem;
+}
+
+.seal-ring,
+.collection-mark-ring {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  border: 1px solid rgba(216, 186, 127, 0.28);
+  background:
+    radial-gradient(circle, rgba(215, 180, 108, 0.08), transparent 62%),
+    rgba(20, 18, 16, 0.82);
+  box-shadow:
+    inset 0 0 0 10px rgba(215, 180, 108, 0.03),
+    0 18px 42px rgba(0, 0, 0, 0.24);
+}
+
+.seal-ring {
+  width: 120px;
+  height: 120px;
+}
+
+.seal-core,
+.collection-mark-text {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  color: rgba(245, 239, 226, 0.76);
+}
+
+.seal-core {
+  width: 82px;
+  height: 82px;
+  border-radius: 50%;
+  border: 1px solid rgba(216, 186, 127, 0.24);
+  font-size: 0.62rem;
+  line-height: 1.5;
+  background: rgba(255, 255, 255, 0.02);
+}
+
 .passport-panel {
   display: grid;
   gap: 1rem;
@@ -154,7 +221,9 @@ button {
 .stat-card,
 .progress-card,
 .passport-card,
-.action-card {
+.action-card,
+.history-item,
+.history-empty {
   position: relative;
   border: 1px solid var(--line);
   border-radius: 24px;
@@ -166,7 +235,9 @@ button {
 .stat-card::after,
 .progress-card::after,
 .passport-card::after,
-.action-card::after {
+.action-card::after,
+.history-item::after,
+.history-empty::after {
   content: "";
   position: absolute;
   inset: 0;
@@ -240,7 +311,9 @@ p {
 .stat-meta,
 .progress-header span,
 .card-meta,
-.badge {
+.badge,
+.history-meta,
+.history-order {
   font-size: 0.88rem;
   color: var(--muted);
 }
@@ -303,6 +376,26 @@ p {
   align-items: start;
 }
 
+.collection-mark {
+  margin-top: 0.9rem;
+}
+
+.collection-mark-ring {
+  width: 104px;
+  height: 104px;
+  transform: rotate(-12deg);
+}
+
+.collection-mark-text {
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  border: 1px solid rgba(216, 186, 127, 0.22);
+  font-size: 0.58rem;
+  line-height: 1.45;
+  background: rgba(255, 255, 255, 0.02);
+}
+
 .passport-grid,
 .action-grid {
   display: grid;
@@ -314,6 +407,7 @@ p {
   padding: 1.2rem;
   display: grid;
   gap: 1rem;
+  overflow: hidden;
 }
 
 .passport-card.discovered {
@@ -327,6 +421,69 @@ p {
   background:
     linear-gradient(180deg, rgba(25, 24, 22, 0.88), rgba(10, 10, 10, 0.95));
   opacity: 0.92;
+}
+
+.passport-card.revealed {
+  animation: discoveredCardPulse 1.9s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.passport-card.revealed::before,
+.action-card.revealed::before {
+  content: "";
+  position: absolute;
+  inset: -24%;
+  background: radial-gradient(circle, rgba(215, 180, 108, 0.24), transparent 55%);
+  opacity: 0;
+  pointer-events: none;
+  animation: discoveryGlow 1.8s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.country-aura,
+.country-mist,
+.background-stamp {
+  position: absolute;
+  pointer-events: none;
+}
+
+.country-aura {
+  inset: -10% 42% 35% -10%;
+  background: radial-gradient(circle, var(--country-glow, rgba(215, 180, 108, 0.12)), transparent 70%);
+  opacity: 0.8;
+  filter: blur(18px);
+}
+
+.country-mist {
+  inset: auto -10% -12% 10%;
+  height: 45%;
+  background: radial-gradient(ellipse at center, var(--country-mist, rgba(255, 255, 255, 0.05)), transparent 70%);
+  opacity: 0.55;
+  filter: blur(24px);
+}
+
+.background-stamp {
+  right: -6px;
+  top: 48%;
+  transform: translateY(-50%) rotate(-20deg);
+  width: 170px;
+  height: 170px;
+  border-radius: 50%;
+  border: 1px solid rgba(216, 186, 127, 0.12);
+  color: rgba(216, 186, 127, 0.12);
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  font-size: 0.62rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: inset 0 0 0 8px rgba(216, 186, 127, 0.05);
+}
+
+.card-content,
+.action-content {
+  position: relative;
+  z-index: 2;
+  display: grid;
+  gap: 1rem;
 }
 
 .card-top {
@@ -360,6 +517,21 @@ p {
   margin-right: 0.5rem;
 }
 
+.passport-card .stamp {
+  position: absolute;
+  right: 18px;
+  bottom: 18px;
+  padding: 0.42rem 0.68rem;
+  border: 1px solid rgba(216, 186, 127, 0.3);
+  border-radius: 999px;
+  color: rgba(245, 239, 226, 0.78);
+  font-size: 0.72rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  background: rgba(215, 180, 108, 0.07);
+  z-index: 2;
+}
+
 .passport-actions {
   padding-bottom: 1.6rem;
 }
@@ -368,12 +540,24 @@ p {
   padding: 1.1rem;
   display: grid;
   gap: 0.9rem;
+  overflow: hidden;
+}
+
+.action-card.revealed {
+  border-color: rgba(216, 186, 127, 0.28);
 }
 
 .discover-button {
   padding: 0.82rem 1rem;
   cursor: pointer;
   color: var(--text);
+  position: relative;
+  z-index: 2;
+}
+
+.discover-button.just-discovered {
+  border-color: rgba(216, 186, 127, 0.34);
+  background: rgba(49, 43, 32, 0.94);
 }
 
 .discover-button[disabled] {
@@ -381,6 +565,63 @@ p {
   opacity: 0.45;
   transform: none;
   box-shadow: none;
+}
+
+.history-list {
+  display: grid;
+  gap: 0.9rem;
+}
+
+.history-item,
+.history-empty {
+  padding: 1rem 1.1rem;
+}
+
+.history-item {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  gap: 1rem;
+  align-items: center;
+  overflow: hidden;
+}
+
+.history-flag-wash {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(270deg, var(--flag-wash, rgba(255, 255, 255, 0.05)), transparent 58%);
+  opacity: 0.55;
+  pointer-events: none;
+}
+
+.history-content,
+.history-date {
+  position: relative;
+  z-index: 1;
+}
+
+.history-order {
+  width: 42px;
+  height: 42px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  border: 1px solid rgba(216, 186, 127, 0.22);
+  color: var(--gold);
+  font-weight: 700;
+}
+
+.history-country {
+  font-family: "Cormorant Garamond", serif;
+  font-size: 1.6rem;
+}
+
+.history-date {
+  text-align: right;
+}
+
+.history-empty {
+  text-align: center;
 }
 
 .empty-state {
@@ -392,12 +633,254 @@ p {
   text-align: center;
 }
 
+@keyframes discoveryGlow {
+  0% {
+    opacity: 0;
+    transform: scale(0.94);
+  }
+
+  30% {
+    opacity: 1;
+  }
+
+  100% {
+    opacity: 0;
+    transform: scale(1.04);
+  }
+}
+
+@keyframes discoveredCardPulse {
+  0% {
+    transform: scale(0.992);
+    box-shadow: 0 0 0 rgba(215, 180, 108, 0);
+  }
+
+  35% {
+    transform: scale(1.02);
+    box-shadow: 0 0 40px rgba(215, 180, 108, 0.16);
+  }
+
+  100% {
+    transform: scale(1);
+    box-shadow: none;
+  }
+}
+
+.revealed.anim-brasil .country-aura {
+  animation: revealBrasilAura 2.2s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.revealed.anim-brasil .country-mist {
+  animation: revealBrasilMist 2.4s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.revealed.anim-rios-vivos .country-mist {
+  animation: revealPeruMist 2.3s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.revealed.anim-rios-vivos .background-stamp {
+  animation: revealPeruStamp 2s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.revealed.anim-sol-da-copa .country-aura {
+  animation: revealColombiaAura 2.1s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.revealed.anim-sol-da-copa .background-stamp {
+  animation: revealColombiaStamp 1.95s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.revealed.anim-raiz-profunda .country-aura {
+  animation: revealBoliviaAura 2.2s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.revealed.anim-raiz-profunda .country-mist {
+  animation: revealBoliviaMist 2.1s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.revealed.anim-orvalho-negro .country-mist {
+  animation: revealEquadorMist 2.5s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.revealed.anim-orvalho-negro .background-stamp {
+  animation: revealEquadorStamp 2.1s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.revealed.anim-resina-do-sol .country-aura {
+  animation: revealVenezuelaAura 2s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.revealed.anim-resina-do-sol .country-mist {
+  animation: revealVenezuelaMist 2.1s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.revealed.anim-chuva-de-londres .country-mist {
+  animation: revealInglaterraMist 2.4s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.revealed.anim-chuva-de-londres .background-stamp {
+  animation: revealInglaterraStamp 2.05s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.revealed.anim-atelier-dourado .country-aura {
+  animation: revealFrancaAura 2.25s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.revealed.anim-atelier-dourado .background-stamp {
+  animation: revealFrancaStamp 2.1s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.revealed.anim-sol-de-toscana .country-aura {
+  animation: revealItaliaAura 2.1s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.revealed.anim-sol-de-toscana .country-mist {
+  animation: revealItaliaMist 2s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.revealed.anim-luz-do-norte .country-aura {
+  animation: revealFinlandiaAura 2.5s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.revealed.anim-luz-do-norte .country-mist {
+  animation: revealFinlandiaMist 2.6s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+@keyframes revealBrasilAura {
+  0% { transform: scale(0.8) translateY(18px); opacity: 0.2; }
+  45% { transform: scale(1.08) translateY(-4px); opacity: 1; }
+  100% { transform: scale(1) translateY(0); opacity: 0.8; }
+}
+
+@keyframes revealBrasilMist {
+  0% { transform: translateX(-16px); opacity: 0; }
+  50% { transform: translateX(8px); opacity: 0.65; }
+  100% { transform: translateX(0); opacity: 0.55; }
+}
+
+@keyframes revealPeruMist {
+  0% { transform: translateY(24px) scaleX(0.92); opacity: 0; }
+  50% { transform: translateY(-8px) scaleX(1.04); opacity: 0.7; }
+  100% { transform: translateY(0) scaleX(1); opacity: 0.55; }
+}
+
+@keyframes revealPeruStamp {
+  0% { transform: translateY(-50%) rotate(-28deg) scale(0.88); opacity: 0; }
+  55% { transform: translateY(-50%) rotate(-12deg) scale(1.05); opacity: 0.2; }
+  100% { transform: translateY(-50%) rotate(-20deg) scale(1); opacity: 1; }
+}
+
+@keyframes revealColombiaAura {
+  0% { transform: scale(0.7); opacity: 0; }
+  35% { transform: scale(1.15); opacity: 1; }
+  100% { transform: scale(1); opacity: 0.8; }
+}
+
+@keyframes revealColombiaStamp {
+  0% { transform: translateY(-50%) rotate(-20deg) scale(0.82); opacity: 0; }
+  40% { transform: translateY(-50%) rotate(-6deg) scale(1.08); opacity: 0.24; }
+  100% { transform: translateY(-50%) rotate(-20deg) scale(1); opacity: 1; }
+}
+
+@keyframes revealBoliviaAura {
+  0% { transform: scale(0.9) translateY(22px); opacity: 0; }
+  50% { transform: scale(1.06) translateY(-6px); opacity: 0.95; }
+  100% { transform: scale(1) translateY(0); opacity: 0.8; }
+}
+
+@keyframes revealBoliviaMist {
+  0% { transform: translateY(18px); opacity: 0; }
+  55% { transform: translateY(-6px); opacity: 0.6; }
+  100% { transform: translateY(0); opacity: 0.55; }
+}
+
+@keyframes revealEquadorMist {
+  0% { transform: scale(0.94) translateX(18px); opacity: 0; }
+  45% { transform: scale(1.06) translateX(-10px); opacity: 0.7; }
+  100% { transform: scale(1) translateX(0); opacity: 0.55; }
+}
+
+@keyframes revealEquadorStamp {
+  0% { transform: translateY(-50%) rotate(-34deg) scale(0.9); opacity: 0; }
+  50% { transform: translateY(-50%) rotate(-14deg) scale(1.04); opacity: 0.22; }
+  100% { transform: translateY(-50%) rotate(-20deg) scale(1); opacity: 1; }
+}
+
+@keyframes revealVenezuelaAura {
+  0% { transform: scale(0.76); opacity: 0; }
+  38% { transform: scale(1.14); opacity: 1; }
+  100% { transform: scale(1); opacity: 0.8; }
+}
+
+@keyframes revealVenezuelaMist {
+  0% { transform: translateX(24px); opacity: 0; }
+  55% { transform: translateX(-8px); opacity: 0.62; }
+  100% { transform: translateX(0); opacity: 0.55; }
+}
+
+@keyframes revealInglaterraMist {
+  0% { transform: translateY(0) scaleX(0.96); opacity: 0; }
+  50% { transform: translateY(-10px) scaleX(1.03); opacity: 0.68; }
+  100% { transform: translateY(0) scaleX(1); opacity: 0.55; }
+}
+
+@keyframes revealInglaterraStamp {
+  0% { transform: translateY(-50%) rotate(-24deg) translateX(12px); opacity: 0; }
+  50% { transform: translateY(-50%) rotate(-16deg) translateX(-4px); opacity: 0.2; }
+  100% { transform: translateY(-50%) rotate(-20deg) translateX(0); opacity: 1; }
+}
+
+@keyframes revealFrancaAura {
+  0% { transform: scale(0.82) rotate(-6deg); opacity: 0; }
+  45% { transform: scale(1.08) rotate(3deg); opacity: 0.96; }
+  100% { transform: scale(1) rotate(0); opacity: 0.8; }
+}
+
+@keyframes revealFrancaStamp {
+  0% { transform: translateY(-50%) rotate(-32deg) scale(0.86); opacity: 0; }
+  55% { transform: translateY(-50%) rotate(-10deg) scale(1.06); opacity: 0.24; }
+  100% { transform: translateY(-50%) rotate(-20deg) scale(1); opacity: 1; }
+}
+
+@keyframes revealItaliaAura {
+  0% { transform: scale(0.78) translateX(-14px); opacity: 0; }
+  45% { transform: scale(1.1) translateX(6px); opacity: 0.98; }
+  100% { transform: scale(1) translateX(0); opacity: 0.8; }
+}
+
+@keyframes revealItaliaMist {
+  0% { transform: translateX(18px) translateY(8px); opacity: 0; }
+  50% { transform: translateX(-6px) translateY(-6px); opacity: 0.64; }
+  100% { transform: translateX(0) translateY(0); opacity: 0.55; }
+}
+
+@keyframes revealFinlandiaAura {
+  0% { transform: scale(0.9) translateY(24px); opacity: 0; }
+  45% { transform: scale(1.04) translateY(-14px); opacity: 0.9; }
+  100% { transform: scale(1) translateY(0); opacity: 0.8; }
+}
+
+@keyframes revealFinlandiaMist {
+  0% { transform: translateY(18px) scaleX(0.94); opacity: 0; }
+  55% { transform: translateY(-12px) scaleX(1.05); opacity: 0.72; }
+  100% { transform: translateY(0) scaleX(1); opacity: 0.55; }
+}
+
 @media (max-width: 900px) {
   .passport-hero,
   .content-header,
   .passport-grid,
-  .action-grid {
+  .action-grid,
+  .history-item {
     grid-template-columns: 1fr;
+  }
+
+  .history-item {
+    text-align: center;
+  }
+
+  .history-date {
+    text-align: center;
   }
 }
 
@@ -410,5 +893,9 @@ p {
   .topbar-link,
   .ghost-button {
     text-align: center;
+  }
+
+  .discovery-toast {
+    min-width: calc(100vw - 2rem);
   }
 }
