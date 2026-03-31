@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta
     name="description"
-    content="Passaporte sensorial do Aroma Atlas com fragrâncias descobertas e territórios olfativos ainda por revelar."
+    content="Passaporte sensorial do Aroma Atlas com fragrâncias descobertas, famílias olfativas e territórios exclusivos por revelar."
   >
   <title>Aroma Atlas | Passaporte Sensorial</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -38,7 +38,7 @@
         <h1>Seu mapa de descobertas</h1>
         <p class="lede">
           Cada toque NFC no frasco revela um território olfativo. Aqui ficam registrados os aromas
-          já encontrados e os caminhos que ainda aguardam descoberta.
+          já encontrados, as raridades conquistadas e os capítulos do atlas que ainda aguardam descoberta.
         </p>
       </div>
 
@@ -57,11 +57,82 @@
           <div class="progress-track" aria-hidden="true">
             <div id="progressFill" class="progress-fill"></div>
           </div>
-          <p>
-            Continue interagindo com os frascos para desbloquear novos rituais, notas e paisagens.
+          <p id="collectorStatus">
+            Continue interagindo com os frascos para desbloquear novos rituais, selos e paisagens.
           </p>
         </div>
+
+        <div class="certificate-card">
+          <span class="stat-label">Arquivo privado</span>
+          <strong id="collectionCode" class="certificate-code">ATLAS-0001</strong>
+          <p id="nextUnlockHint" class="certificate-copy">
+            Falta 1 descoberta para desbloquear um novo selo de coleção.
+          </p>
+          <div class="memory-grid">
+            <div class="memory-item">
+              <span class="certificate-label">última descoberta</span>
+              <strong id="lastDiscovery" class="memory-value">aguardando revelação</strong>
+            </div>
+            <div class="memory-item">
+              <span class="certificate-label">território mais raro</span>
+              <strong id="rarestDiscovery" class="memory-value">ainda não encontrado</strong>
+            </div>
+            <div class="memory-item">
+              <span class="certificate-label">próximo selo</span>
+              <strong id="nextSeal" class="memory-value">em observação</strong>
+            </div>
+          </div>
+          <div id="sequenceReward" class="sequence-reward" aria-live="polite">
+            Ao descobrir 3 territórios, um privilégio exclusivo da coleção será liberado.
+          </div>
+        </div>
       </div>
+    </section>
+
+    <section class="passport-content families-panel">
+      <div class="content-header compact">
+        <div>
+          <span class="eyebrow">Famílias do atlas</span>
+          <h2>Progressão por coleção</h2>
+        </div>
+        <p>
+          Completar famílias olfativas cria uma sensação de quase-conquista: cada barra concluída aproxima o usuário de um selo especial e torna o atlas mais desejável.
+        </p>
+      </div>
+
+      <div id="familyProgress" class="family-grid"></div>
+    </section>
+
+    <section class="passport-content collection-ownership">
+      <div class="content-header compact">
+        <div>
+          <span class="eyebrow">Minha coleção</span>
+          <h2>Acervo conquistado</h2>
+        </div>
+        <p>
+          O passaporte também funciona como prova de posse simbólica: status pessoal, famílias concluídas e selos já incorporados ao seu acervo.
+        </p>
+      </div>
+
+      <div class="ownership-grid">
+        <article class="ownership-card">
+          <span class="certificate-label">status atual</span>
+          <strong id="collectionStatusTitle" class="ownership-value">Colecionador iniciante</strong>
+          <p id="collectionStatusCopy" class="ownership-copy">
+            Seu acervo acaba de começar e já carrega o primeiro registro do atlas.
+          </p>
+        </article>
+
+        <article class="ownership-card">
+          <span class="certificate-label">coleção continental</span>
+          <strong id="continentBadge" class="ownership-value">Américas em formação</strong>
+          <p id="continentBadgeCopy" class="ownership-copy">
+            Continue revelando territórios para consolidar a coleção continental.
+          </p>
+        </article>
+      </div>
+
+      <div id="collectionBadges" class="badge-collection" aria-live="polite"></div>
     </section>
 
     <section class="passport-content">
@@ -91,8 +162,10 @@
           <h2>Próximos territórios</h2>
         </div>
         <p>
-          Cada fragrância bloqueada funciona como um convite. O passaporte mostra que o atlas ainda
-          está incompleto e dá vontade de continuar a jornada.
+          Cada fragrância bloqueada funciona como um convite. Agora os territórios selados aparecem como silhuetas ocultas, com pistas visuais e famílias de coleção que instigam curiosidade sem revelar o nome real.
+        </p>
+        <p id="nextTerritoryTeaser" class="next-teaser">
+          Um território floral de alta elegância aguarda revelação.
         </p>
       </div>
 
@@ -106,8 +179,7 @@
           <h2>Histórico de descobertas</h2>
         </div>
         <p>
-          Cada leitura fica registrada com ordem e data para transformar o passaporte em um acervo
-          vivo de revelações sensoriais.
+          Cada leitura fica registrada com ordem e data para transformar o passaporte em um acervo vivo de revelações sensoriais.
         </p>
       </div>
 
@@ -133,3 +205,4 @@
   <script src="scripts/passport.js"></script>
 </body>
 </html>
+
